@@ -7,10 +7,10 @@
 MNTDIR="$PWD/rootfs"
 
 # List of packages to be installed
-# Most of those are already dependencies 
+# Most of those are already dependencies
 # of each other but it is not a bad idea
 # to put them to the list anyway.
-PKGS="baselayout kiss musl gcc make gzip xz zlib bzip2 binutils byacc curl \
+PKGS="baselayout cpt musl gcc make gzip xz zlib bzip2 binutils byacc curl \
      linux-headers m4 flex busybox pkgconf rsync bearssl ca-certificates"
 
 # Build flags
@@ -31,22 +31,19 @@ MAKEFLAGS="-j$(nproc)"
 
 # Repository
 # This repository will be cloned to /tmp/repo on the
-# host, and /var/db/kiss/repo on the target system.
+# host, and /var/db/cpt/repo on the target system.
 REPO="rsync://carbslinux.org/repo"
 HOST_REPO_PATH="/tmp/repo/core"
 
 export MNTDIR PKGS CFLAGS CXXFLAGS REPO HOST_REPO_PATH MAKEFLAGS
 
 postinstall() {
-	# You can preferably add some custom
-	# commands if you want a postinstall
-	# procedure. This runs right after kiss
-	# install is complete
+	# You can preferably add some custom # commands if you want a
+        # postinstall procedure. This runs right after cpt-install is complete.
 
-	# Currently default function is 'true'
-	# because there is nothing else to be done,
-	# but you can safely remove it if you will
-	# be adding some post-installation commands
+	# Currently default function is 'true' because there is nothing else to
+        # be done, but you can safely remove it if you will be adding some
+        # post-installation commands.
 	true
 }
 
