@@ -4,20 +4,8 @@
 # Bootstrapper for Carbs Linux
 # See LICENSE file for copyright and license details
 
-{
-    # Source kiss as a library so that we can use pkg_order
-    #
-    # Get the line number so we can remove the last line
-    # that is calling the main function.
-    kissloc=$(command -v kiss)
-    kissln=$(wc -l < "$kissloc")
-
-    # Save the file on a temporary .kisslib file where we
-    # will be reading the library functions.
-    sed "${kissln}d" "$kissloc" > .kisslib
-    . ./.kisslib
-    rm -f .kisslib
-}
+# Source the package manager library.
+. cpt-lib
 
 # Functions
 msg() { printf '\033[1;35m-> \033[m%s\n' "$@" ;}
@@ -72,8 +60,8 @@ EOF
 # Script starts here
 
 msg "Starting Script..."
-msg "Setting KISS_ROOT to $MNTDIR"
-export KISS_ROOT="$MNTDIR"
+msg "Setting CPT_ROOT to $MNTDIR"
+export CPT_ROOT="$MNTDIR"
 
 # Check whether REPO and REPO_PATH variables exist
 [ "$REPO" ] || die "REPO variable is not set"
@@ -81,20 +69,20 @@ export KISS_ROOT="$MNTDIR"
 # Create parent directories for the repositories, and
 # remove pre-existing repositories. We then shallow
 # clone the repositories to both locations.
-case $REPO in 
+case $REPO in
     rsync://*)
         msg "Acquiring repository"
-        mkdir -p "$MNTDIR/var/db/kiss" /tmp
-        rm -rf /tmp/repo "$MNTDIR/var/db/kiss/repo"
+        mkdir -p "$MNTDIR/var/db/cpt" /tmp
+        rm -rf /tmp/repo "$MNTDIR/var/db/cpt/repo"
         rsync -avCz --include=core --delete "$REPO/" /tmp/repo
-        cp -r /tmp/repo "$MNTDIR/var/db/kiss/repo"
+        cp -r /tmp/repo "$MNTDIR/var/db/cpt/repo"
     ;;
     *)
         msg "Cloning repository"
-        mkdir -p "$MNTDIR/var/db/kiss" /tmp
-        rm -rf /tmp/repo "$MNTDIR/var/db/kiss/repo"
+        mkdir -p "$MNTDIR/var/db/cpt" /tmp
+        rm -rf /tmp/repo "$MNTDIR/var/db/cpt/repo"
         git clone --depth 1 "$REPO" /tmp/repo
-        cp -r /tmp/repo "$MNTDIR/var/db/kiss/repo"
+        cp -r /tmp/repo "$MNTDIR/var/db/cpt/repo"
 esac
 
 # Install extra repositories defined in a 'repositories'
@@ -118,8 +106,8 @@ while read -r repourl repodir gitopts; do
 done < repositories
 
 
-# We export the new KISS_PATH
-export KISS_PATH="${HOST_REPO_PATH:-/tmp/repo/core}"
+# We export the new CPT_PATH
+export CPT_PATH="${HOST_REPO_PATH:-/tmp/repo/core}"
 
 msg "Starting build from the PKGS variable"
 
@@ -128,11 +116,11 @@ msg "Starting build from the PKGS variable"
 for pkg in $order; do
     # Get the package directory so we can get version
     # and release numbers.
-    pkgdir=$(kiss s "$pkg" | sed 1q)
+    pkgdir=$(cpt s --single "$pkg")
     read -r ver rel < "$pkgdir/version"
 
     # Check if the package is already installed and skip.
-    [ "$(kiss l "$pkg")" = "$pkg $ver $rel" ] && continue
+    [ "$(cpt l "$pkg")" = "$pkg $ver $rel" ] && continue
 
     # Check if a prebuild tarball exists, build the package
     # if it doesn't exist.
@@ -140,12 +128,11 @@ for pkg in $order; do
     # pkg_order should be dealing with packages in a way that
     # no prompts are asked, but let's not take any chances
     # either.
-    [ -f "${XDG_CONFIG_HOME:-$HOME/.cache}/kiss/bin/$pkg#$ver-$rel.tar.${KISS_COMPRESS:-gz}" ] ||
-        KISS_NOPROMPT=1 kiss b "$pkg"
-    KISS_NOPROMPT=1 kiss i "$pkg"
+    pkg_isbuilt "$pkg" || CPT_NOPROMPT=1 cpt b "$pkg"
+    CPT_NOPROMPT=1 cpt i "$pkg"
 done
 
-# You can check out about post-installation 
+# You can check out about post-installation
 # from the configuration file
 msg "Installation Complete, starting custombuild procedure if there is one"
 postinstall
