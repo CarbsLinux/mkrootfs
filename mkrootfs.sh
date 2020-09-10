@@ -75,14 +75,12 @@ case $REPO in
         mkdir -p "$MNTDIR/var/db/cpt" /tmp
         rm -rf /tmp/repo "$MNTDIR/var/db/cpt/repo"
         rsync -avCz --include=core --delete "$REPO/" /tmp/repo
-        cp -r /tmp/repo "$MNTDIR/var/db/cpt/repo"
     ;;
     *)
         msg "Cloning repository"
         mkdir -p "$MNTDIR/var/db/cpt" /tmp
         rm -rf /tmp/repo "$MNTDIR/var/db/cpt/repo"
         git clone --depth 1 "$REPO" /tmp/repo
-        cp -r /tmp/repo "$MNTDIR/var/db/cpt/repo"
 esac
 
 # Install extra repositories defined in a 'repositories'
