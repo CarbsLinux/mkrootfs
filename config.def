@@ -2,24 +2,20 @@
 # Configuration file for Carbs bootstrapper
 #
 
-# Root directory
+# ROOT DIRECTORY
 # This is where the rootfs will be installed.
 MNTDIR="$PWD/rootfs"
 
 # List of packages to be installed
-# Most of those are already dependencies
-# of each other but it is not a bad idea
+# Most of those are already dependencies of each other but it is not a bad idea
 # to put them to the list anyway.
 PKGS="baselayout cpt musl gcc make gzip xz zlib bzip2 binutils byacc curl \
      linux-headers m4 flex busybox pkgconf rsync libressl git"
 
-# Build flags
-# It is a good idea to not use flags like "native"
-# If you plan on using the tarball on another computer
-# due to architechtural differences. You can manually
-# override this march configuration here by removing the
-# case.
-#
+# BUILD FLAGS
+# It is a good idea to not use flags like "native". If you plan on using the
+# tarball on another computer # due to architechtural differences. You can
+# manually override this march configuration here by removing the case.
 march=$(uname -m)
 case "$march" in
     x86_64) march=x86-64 ;;
@@ -30,9 +26,9 @@ CXXFLAGS="-march=$march -mtune=generic -pipe -Os"
 MAKEFLAGS="-j$(nproc)"
 
 # Repository
-# This repository will be cloned to /tmp/repo on the
-# host, and /var/db/cpt/repo on the target system.
+# This repository will be cloned to /tmp/repo on the host. It is optional.
 REPO="rsync://carbslinux.org/repo"
+# Host repo path is the repository to use when building packages.
 HOST_REPO_PATH="/tmp/repo/core"
 
 export MNTDIR PKGS CFLAGS CXXFLAGS REPO HOST_REPO_PATH MAKEFLAGS
