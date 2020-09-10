@@ -43,10 +43,10 @@ MAKEFLAGS = $MAKEFLAGS
 
 Repository and package options
 
-REPO      = $REPO
+REPO            = $REPO
 REPOSITORY PATH = $HOST_REPO_PATH
-PKGS      = $PKGS
-ORDER     = $order
+PKGS            = $PKGS
+ORDER           = $order
 
 EOF
 
