@@ -9,8 +9,8 @@ MNTDIR="$PWD/rootfs"
 # List of packages to be installed
 # Most of those are already dependencies of each other but it is not a bad idea
 # to put them to the list anyway.
-PKGS="baselayout cpt musl gcc make gzip xz zlib bzip2 binutils byacc curl \
-     linux-headers m4 flex busybox pkgconf rsync libressl git"
+PKGS="baselayout cpt musl gcc make gzip xz zlib bzip2 binutils byacc ca-certificates bearssl curl \
+     linux-headers m4 flex busybox pkgconf rsync git"
 
 # BUILD FLAGS
 # It is a good idea to not use flags like "native". If you plan on using the
