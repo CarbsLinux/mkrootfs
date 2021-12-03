@@ -9,7 +9,7 @@ MNTDIR="$PWD/rootfs"
 # List of packages to be installed
 # Most of those are already dependencies of each other but it is not a bad idea
 # to put them to the list anyway.
-PKGS="baselayout musl otools cl-utils b3sum cpt gcc make gzip xz zlib bzip2 binutils
+PKGS="baselayout musl otools cl-utils b3sum cpt gcc make pigz xz zlib bzip2 binutils
       byacc libressl curl linux-headers flex busybox pkgconf rsync git"
 
 # BUILD FLAGS
